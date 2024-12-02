@@ -6,7 +6,7 @@
 /*   By: nmotie- <nmotie-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 21:32:23 by nmotie-           #+#    #+#             */
-/*   Updated: 2024/11/03 12:43:37 by nmotie-          ###   ########.fr       */
+/*   Updated: 2024/12/01 19:46:02 by nmotie-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	init_mutex(t_data *data, pthread_mutex_t *forks)
 	}
 }
 
-void	destroy_mutex(t_data *data, pthread_mutex_t *forks)
+void	destroy_mutex(t_data *data, pthread_mutex_t *forks, pthread_mutex_t *mutex)
 {
 	int	i;
 
@@ -75,6 +75,7 @@ void	destroy_mutex(t_data *data, pthread_mutex_t *forks)
 	while (i < data->philo_nb)
 	{
 		pthread_mutex_destroy(&forks[i]);
+		pthread_mutex_destroy(mutex);
 		i++;
 	}
 }
