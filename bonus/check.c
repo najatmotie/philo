@@ -6,11 +6,115 @@
 /*   By: nmotie- <nmotie-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:24:39 by nmotie-           #+#    #+#             */
-/*   Updated: 2024/12/03 11:36:05 by nmotie-          ###   ########.fr       */
+/*   Updated: 2024/12/02 23:07:03 by nmotie-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	i;
+
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	return (i);
+}
+
+static int	integer_len(long n)
+{
+	int	i;
+
+	i = 0;
+	if (n == 0)
+		return (1);
+	if (n < 0)
+	{
+		i = 1;
+		n = n * -1;
+	}
+	while (n > 0)
+	{
+		n = n / 10;
+		i++;
+	}
+	return (i);
+}
+
+char	*ft_itoa(int n)
+{
+	long	nb;
+	char	*str;
+	int		i;
+
+	nb = n;
+	str = (char *)malloc(integer_len(nb) + 1 * sizeof(char));
+	if (str == NULL)
+		return (NULL);
+	str[integer_len(nb)] = '\0';
+	i = integer_len(nb) - 1;
+	if (nb == 0)
+		str[0] = '0';
+	if (nb < 0)
+	{
+		str[0] = '-';
+		nb = nb * -1;
+	}
+	while (nb > 0)
+	{
+		str[i] = nb % 10 + '0';
+		nb = nb / 10;
+		i--;
+	}
+	return (str);
+}
+
+char	*ft_strjoin(char *s1, char *s2)
+{
+	char	*new_s;
+	size_t	i;
+	size_t	j;
+
+	if (s1 == NULL || s2 == NULL)
+		return (NULL);
+	new_s = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (new_s == NULL)
+		return (NULL);
+	i = 0;
+	while (s1[i])
+	{
+		new_s[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j])
+	{
+		new_s[i + j] = s2[j];
+		j++;
+	}
+	new_s[i + j] = '\0';
+	return (new_s);
+}
+
+int	ft_atoi(const char *str)
+{
+	int	i;
+	int	r;
+	int	sign;
+
+	i = 0;
+	r = 0;
+	sign = 1;
+	if (str[i] != '\0' && (str[i] == '+' && str[i + 1] != '\0'))
+		i++;
+	while (str[i] != '\0' && (str[i] >= '0' && str[i] <= '9'))
+	{
+		r = (r * 10) + (str[i] - 48);
+		i++;
+	}
+	return (r * sign);
+}
 
 int	check_values(char **av)
 {

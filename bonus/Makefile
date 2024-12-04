@@ -2,11 +2,11 @@ NAME = philo
 
 CFLAGS = -Wall -Wextra -Werror -fsanitize=thread -g
 
-SRC = main.c utils.c check.c time.c init.c create.c routine.c death.c
+SRC = main.c check.c time.c init.c create.c routine.c
 
 OBJ = ${SRC:.c=.o}
 
-${NAME} : ${OBJ} philo.h
+${NAME} : ${OBJ} philo_bonus.h
 	cc ${CFLAGS} ${OBJ} -o ${NAME}
 
 all : ${NAME}
