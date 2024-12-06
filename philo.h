@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_bonus.h                                      :+:      :+:    :+:   */
+/*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmotie- <nmotie-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 21:32:19 by nmotie-           #+#    #+#             */
-/*   Updated: 2024/12/03 15:57:01 by nmotie-          ###   ########.fr       */
+/*   Updated: 2024/12/06 14:50:01 by nmotie-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <pthread.h>
 #include <stdio.h>
-#include <signal.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#include <semaphore.h>
+#include <unistd.h>
 
 typedef struct s_args
 {
@@ -29,24 +28,30 @@ typedef struct s_data
 {
 	int				philo_nb;
 	int				philo_id;
-	int				eat_count;
-	int				still_alive;
-	long			last_meal_time;
-	sem_t			*sem_lock;
-	sem_t			*forks;
-	sem_t	*left_fork;
-	sem_t	*right_fork;
+	int				*eat_count;
+	int				*still_alive;
+	int				*error_occured;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	*multi_lock;
 	struct timeval	start_time;
 	t_args			args;
+	long			last_meal_time;
 }					t_data;
 
 int					ft_atoi(const char *str);
-char				*ft_itoa(int n);
-char				*ft_strjoin(char *s1, char *s2);
+void				printing_(t_data *data, char *s);
 int					check_errors(char **av, int ac);
-void				init_philos(t_data *data, char **av, int ac);
 long				get_timestamp_in_ms(struct timeval start_time);
 void				ft_usleep(useconds_t time);
-void				create_philos(t_data *data, sem_t	*forks);
-void	*philo_routine(t_data *data, sem_t	*forks);
-void	death_monitor(t_data *data, pid_t *philos);
+void				init_philos(t_data *data, pthread_mutex_t *mutex, char **av,
+						int ac);
+int					init_mutexes(t_data *data, pthread_mutex_t *forks,
+						pthread_mutex_t *mutex);
+void				create_threads(t_data *data, pthread_t *philos,
+						pthread_mutex_t *forks, int *created_number);
+void				*philo_routine(void *arg);
+void				death_monitor(t_data *data);
+void				join_threads(pthread_t *philos, int *created_number);
+void				destroy_mutexes(t_data *data, pthread_mutex_t *forks,
+						pthread_mutex_t *mutex);

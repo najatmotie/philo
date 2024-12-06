@@ -6,23 +6,41 @@
 /*   By: nmotie- <nmotie-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 21:32:23 by nmotie-           #+#    #+#             */
-/*   Updated: 2024/12/01 19:46:02 by nmotie-          ###   ########.fr       */
+/*   Updated: 2024/12/06 13:07:01 by nmotie-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	init_variables(t_data *data, char **av)
+void	shared_data(t_data *data, pthread_mutex_t *mutex)
 {
 	int	i;
-	int	*p;
-	int	*r;
+	int	*p1;
+	int	*p2;
+	int	*p3;
 
 	i = 0;
-	p = malloc(sizeof(int));
-	*p = 0;
-	r = malloc(sizeof(int));
-	*r = 0;
+	p1 = malloc(sizeof(int));
+	*p1 = 0;
+	p2 = malloc(sizeof(int));
+	*p2 = 0;
+	p3 = malloc(sizeof(int));
+	*p3 = 0;
+	while (i < data->philo_nb)
+	{
+		data[i].eat_count = p1;
+		data[i].still_alive = p2;
+		data[i].error_occured = p3;
+		data[i].multi_lock = mutex;
+		i++;
+	}
+}
+
+void	set_values(t_data *data, char **av)
+{
+	int	i;
+
+	i = 0;
 	while (i < ft_atoi(av[1]))
 	{
 		data[i].args.time_must_eat = 0;
@@ -31,20 +49,19 @@ void	init_variables(t_data *data, char **av)
 		data[i].args.time_to_die = ft_atoi(av[2]);
 		data[i].args.time_to_eat = ft_atoi(av[3]);
 		data[i].args.time_to_sleep = ft_atoi(av[4]);
-		data[i].eat_count = p;
-		data[i].still_alive = r;
 		gettimeofday(&data[i].start_time, NULL);
 		data[i].last_meal_time = get_timestamp_in_ms(data[i].start_time);
 		i++;
 	}
 }
 
-void	init_philos(t_data *data, char **av, int ac)
+void	init_philos(t_data *data, pthread_mutex_t *mutex, char **av, int ac)
 {
 	int	i;
 
 	i = 0;
-	init_variables(data, av);
+	set_values(data, av);
+	shared_data(data, mutex);
 	if (ac == 6)
 	{
 		while (i < ft_atoi(av[1]))
@@ -55,27 +72,38 @@ void	init_philos(t_data *data, char **av, int ac)
 	}
 }
 
-void	init_mutex(t_data *data, pthread_mutex_t *forks)
+int	init_mutexes(t_data *data, pthread_mutex_t *forks, pthread_mutex_t *mutex)
 {
 	int	i;
 
 	i = 0;
+	if (pthread_mutex_init(mutex, NULL) != 0)
+	{
+		printf("failed to init mutex of lock\n");
+		return (0);
+	}
 	while (i < data->philo_nb)
 	{
-		pthread_mutex_init(&forks[i], NULL);
+		if (pthread_mutex_init(&forks[i], NULL) != 0)
+		{
+			printf("failed to init mutex of fork number %d\n", data->philo_id);
+			return (0);
+		}
 		i++;
 	}
+	return (1);
 }
 
-void	destroy_mutex(t_data *data, pthread_mutex_t *forks, pthread_mutex_t *mutex)
+void	destroy_mutexes(t_data *data, pthread_mutex_t *forks,
+		pthread_mutex_t *mutex)
 {
 	int	i;
 
 	i = 0;
+	pthread_mutex_destroy(mutex);
 	while (i < data->philo_nb)
 	{
 		pthread_mutex_destroy(&forks[i]);
-		pthread_mutex_destroy(mutex);
 		i++;
 	}
 }
