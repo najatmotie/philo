@@ -1,7 +1,5 @@
 # Ignore compiled files
 *.o
-a.out
-philo
 
 # Ignore files and directories
 philo_notes

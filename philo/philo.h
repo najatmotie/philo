@@ -6,15 +6,18 @@
 /*   By: nmotie- <nmotie-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 21:32:19 by nmotie-           #+#    #+#             */
-/*   Updated: 2024/12/07 14:12:03 by nmotie-          ###   ########.fr       */
+/*   Updated: 2024/12/10 00:32:56 by nmotie-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <sys/time.h>
+#ifndef PHILO_H
+# define PHILO_H
+
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <sys/time.h>
+# include <pthread.h>
 
 typedef struct s_args
 {
@@ -26,8 +29,8 @@ typedef struct s_args
 
 typedef struct s_data
 {
-	int				philo_nb;
 	int				philo_id;
+	int				philo_nb;
 	int				*eat_count;
 	int				*still_alive;
 	int				*error_occured;
@@ -35,8 +38,8 @@ typedef struct s_data
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*multi_lock;
 	struct timeval	start_time;
-	t_args			args;
 	long			last_meal_time;
+	t_args			args;
 }					t_data;
 
 int					ft_atoi(const char *str);
@@ -57,3 +60,5 @@ void				death_monitor(t_data *data);
 void				join_threads(t_data data, pthread_t *philos);
 void				destroy_mutexes(t_data data, pthread_mutex_t *forks,
 						pthread_mutex_t *mutex);
+
+#endif

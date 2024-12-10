@@ -6,7 +6,7 @@
 /*   By: nmotie- <nmotie-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 21:32:15 by nmotie-           #+#    #+#             */
-/*   Updated: 2024/12/07 14:15:14 by nmotie-          ###   ########.fr       */
+/*   Updated: 2024/12/10 01:16:56 by nmotie-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ int	main(int ac, char **av)
 	init_philos(data, &mutex, av, ac);
 	if (!init_mutexes(data, forks, &mutex))
 	{
-		free_ressources(data, forks, philos);
 		destroy_mutexes(*data, forks, &mutex);
+		free_ressources(data, forks, philos);
 		return (1);
 	}
 	create_threads(data, philos, forks);
 	death_monitor(data);
 	join_threads(*data, philos);
-	free_ressources(data, forks, philos);
 	destroy_mutexes(*data, forks, &mutex);
+	free_ressources(data, forks, philos);
 	return (0);
 }
